@@ -21,6 +21,7 @@ def get_fake_user_agent():
 
 def crawl_data(BASE_URL,phone_id):
     try:
+        print(phone_id,flush=True)
         price_detail = requests.get(f'{BASE_URL}//model.aspx?modelid={phone_id}',headers = get_fake_user_agent())
         price_soup = BeautifulSoup(price_detail.text, 'html.parser')
         spans = price_soup.find('div',attrs={'class':'prices-txt'}).find_all('span')
@@ -40,9 +41,11 @@ def crawl_data(BASE_URL,phone_id):
         for i in range(0, len(links)):
             titles.append(links[i].find('div',attrs={'class' : 'ParamCol'}).text.replace('?','').strip())
             values.append(links[i].find('div',attrs={'class' : 'ParamColValue'}).text.strip())
+        
+        print('not faild')
         return dict(zip(titles,values))
     except:
-        pass
+        print('faild')
 
 
 def translate_names(df):
@@ -91,15 +94,12 @@ def zap_data_crawl_all(BASE_URL,filename,page):
         url = f'{BASE_URL}models.aspx?sog=e-cellphone&pageinfo={index}'
         page = requests.get(url,headers = get_fake_user_agent())
         soup = BeautifulSoup(page.text, 'html.parser')
-        last_page = int(soup.find('div',attrs={'class':'paging'}).find('select').find_all('option')[-1].text)
-        # last_page = 2
+        last_page = 23
+        # last_page = int(soup.find('div',attrs={'class':'paging'}).find('select').find_all('option')[-1].text)
         for i in range(index,last_page):
             a_tags = soup.find('div',attrs={'id':'divSearchResults'}).find_all('a')
-            # data-model-id
             phone_id = [tag.get('data-model-id') for tag in a_tags] 
-            # [link.get('href').split('=')[1].split('&')[0] for link in link_tags]
             for i in range(0, len(phone_id)):
-                # print(phone_id[i],flush=True)
                 cd = crawl_data(BASE_URL,phone_id[i])
                 if(cd is not None):
                     cd['מספר עמוד'] = index
