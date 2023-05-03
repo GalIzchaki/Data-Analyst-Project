@@ -1,10 +1,10 @@
-# from bs4 import BeautifulSoup
-# from random import randint
-# import requests
-# import pandas as pd
-# import time
-# from time import sleep
-# from urllib.parse import urlparse, parse_qs
+from bs4 import BeautifulSoup
+from random import randint
+import requests
+import pandas as pd
+import time
+from time import sleep
+from urllib.parse import urlparse, parse_qs
 
 
 # def sleepms(milliseconds: int):
@@ -159,32 +159,8 @@
 # ret_page = 11
 # ret_data_crawl_all(BASE_URL=RET_BASE_URL, filename=ret_filename, page=ret_page)
 
-def is_number(s):
-    try:
-        float(s)
-        
-    except ValueError:
-        return False
+df = pd.read_csv('./data/zap_data.csv')
+df['Page number'] = pd.to_numeric(df['Page number'])
+df.sort_values(['Page number'],inplace=True)
 
-# def sum_col(col):
-#     try:
-#         col = float(col)
-#         return col 
-#     except ValueError:
-        
-    
-#     if col == 'None':
-#         return col
-#     col_string = col.split(' ')
-#     ret_sum = 0
-#     for i in range(0,len(col_string)):
-#         ret_sum += float(col_string[i])
-def sum_col(col):
-    if col == 'None':
-        return col
-    col_string = col.split(' ')
-    ret_sum = 0
-    for i in range(0,len(col_string)):
-        ret_sum += float(col_string[i])
-    return str(ret_sum)
-print(sum_col('6'))
+df.to_csv('./data/zap_data1.csv',index=False)
